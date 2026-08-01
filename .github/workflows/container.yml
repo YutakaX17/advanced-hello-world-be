@@ -12,6 +12,8 @@ permissions:
 jobs:
   image:
     runs-on: ubuntu-latest
+    outputs:
+      digest: ${{ steps.build.outputs.digest }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f # v3
@@ -29,6 +31,7 @@ jobs:
             type=semver,pattern={{version}}
             type=sha
       - uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
+        id: build
         with:
           context: .
           push: true
@@ -36,3 +39,48 @@ jobs:
           sbom: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: image
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: write
+      packages: read
+    steps:
+      - uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Write immutable image metadata
+        run: |
+          mkdir -p release
+          printf '%s\n' \
+            "image=ghcr.io/yutakax17/advanced-hello-world-be:${GITHUB_REF_NAME}" \
+            "digest=${{ needs.image.outputs.digest }}" \
+            "source_revision=${GITHUB_SHA}" \
+            > release/advanced-hello-world-be-image.txt
+      - uses: anchore/sbom-action@e22c389904149dbc22b58101806040fa8d37a610 # v0
+        with:
+          image: ghcr.io/yutakax17/advanced-hello-world-be@${{ needs.image.outputs.digest }}
+          format: spdx-json
+          output-file: release/advanced-hello-world-be-sbom.spdx.json
+          upload-artifact: false
+          upload-release-assets: false
+      - name: Write release checksums
+        run: |
+          sha256sum \
+            release/advanced-hello-world-be-image.txt \
+            release/advanced-hello-world-be-sbom.spdx.json \
+            > release/SHA256SUMS
+      - uses: softprops/action-gh-release@3bb12739c298aeb8a4eeaf626c5b8d85266b0e65 # v2
+        with:
+          generate_release_notes: true
+          make_latest: true
+          fail_on_unmatched_files: true
+          files: |
+            release/advanced-hello-world-be-image.txt
+            release/advanced-hello-world-be-sbom.spdx.json
+            release/SHA256SUMS

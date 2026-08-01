@@ -130,7 +130,9 @@ the distribution use PostgreSQL.
 The container runs as a non-root user and exposes port `8000`. Its health check
 uses `/api/v1/health/live`. Released images are published at
 `ghcr.io/yutakax17/advanced-hello-world-be` with immutable version tags, image
-provenance, and SBOM attestations.
+provenance, and SBOM attestations. A successful version-tag build also creates
+a GitHub Release with immutable image metadata, an SPDX image SBOM, and SHA-256
+checksums.
 
 Pull requests run backend quality checks, dependency review, CodeQL, secret
 scanning, and vulnerability scanning. See [CONTRIBUTING.md](CONTRIBUTING.md),
