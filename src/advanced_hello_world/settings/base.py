@@ -1,4 +1,15 @@
 import os
+from pathlib import Path
+
+from advanced_hello_world.module_manifest import load_manifest
+
+MANIFEST_PATH = Path(
+    os.getenv(
+        "BACKEND_MODULE_MANIFEST",
+        Path("modules.json").resolve(),
+    )
+)
+MODULE_MANIFEST = load_manifest(MANIFEST_PATH)
 
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY", "unsafe-development-key")
 DEBUG = False
@@ -14,7 +25,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "corsheaders",
     "rest_framework",
-    "advanced_hello_world_core",
+    *(selection.django_app for selection in MODULE_MANIFEST.selections),
 ]
 
 MIDDLEWARE = [

@@ -1,7 +1,6 @@
 # syntax=docker/dockerfile:1.7
 FROM python:3.12-slim AS builder
 
-ARG CORE_SOURCE=git+https://github.com/YutakaX17/advanced-hello-world-be-core.git@v0.1.0
 ENV PIP_DISABLE_PIP_VERSION_CHECK=1 \
     PIP_NO_CACHE_DIR=1
 
@@ -12,9 +11,10 @@ RUN apt-get update \
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 RUN pip install --upgrade pip
-COPY pyproject.toml README.md ./
+COPY pyproject.toml README.md modules.json ./
 COPY src ./src
-RUN pip install "${CORE_SOURCE}" .
+RUN pip install . \
+    && python -m advanced_hello_world.module_installer modules.json
 
 FROM python:3.12-slim
 ENV PATH="/opt/venv/bin:$PATH" \
@@ -24,6 +24,7 @@ WORKDIR /app
 RUN addgroup --system app && adduser --system --ingroup app app
 COPY --from=builder /opt/venv /opt/venv
 COPY manage.py ./
+COPY modules.json ./
 COPY scripts ./scripts
 RUN chmod +x scripts/entrypoint.sh && chown -R app:app /app
 USER app

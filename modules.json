@@ -4,10 +4,23 @@
   "core": {
     "id": "platform-core",
     "package": "advanced-hello-world-be-core",
-    "version": "0.1.0",
+    "version": "0.3.0",
+    "repository": "https://github.com/YutakaX17/advanced-hello-world-be-core.git",
+    "ref": "90e1a7e1070ed199e0ee50af4342c9cc6d8724d2",
     "djangoApp": "advanced_hello_world_core",
     "urls": "advanced_hello_world_core.urls",
     "urlPrefix": "api/"
   },
-  "modules": []
+  "modules": [
+    {
+      "id": "messages",
+      "package": "advanced-hello-world-be-messages",
+      "version": "0.1.0",
+      "repository": "https://github.com/YutakaX17/advanced-hello-world-be-messages.git",
+      "ref": "f0756f897df850d4b37d4b7581022acff4e28bfa",
+      "djangoApp": "advanced_hello_world_messages",
+      "urls": "advanced_hello_world_messages.urls",
+      "urlPrefix": "api/"
+    }
+  ]
 }
