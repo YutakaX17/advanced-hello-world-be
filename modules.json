@@ -6,7 +6,7 @@
     "package": "advanced-hello-world-be-core",
     "version": "0.3.0",
     "repository": "https://github.com/YutakaX17/advanced-hello-world-be-core.git",
-    "ref": "90e1a7e1070ed199e0ee50af4342c9cc6d8724d2",
+    "ref": "5095d868c3cc1a5eafb834270ad35e0e4f8c8237",
     "djangoApp": "advanced_hello_world_core",
     "urls": "advanced_hello_world_core.urls",
     "urlPrefix": "api/"
@@ -17,7 +17,7 @@
       "package": "advanced-hello-world-be-messages",
       "version": "0.1.0",
       "repository": "https://github.com/YutakaX17/advanced-hello-world-be-messages.git",
-      "ref": "f0756f897df850d4b37d4b7581022acff4e28bfa",
+      "ref": "f1d49ba400e7eea7d8ebfe71b6977b9f3e156abc",
       "djangoApp": "advanced_hello_world_messages",
       "urls": "advanced_hello_world_messages.urls",
       "urlPrefix": "api/"
