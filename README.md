@@ -35,18 +35,15 @@ CREATE ROLE advanced_hello_world LOGIN PASSWORD 'local-development-password';
 CREATE DATABASE advanced_hello_world OWNER advanced_hello_world;
 ```
 
-Set the development environment:
+Create the local development environment file:
 
 ```bash
-export POSTGRES_HOST=localhost
-export POSTGRES_PORT=5432
-export POSTGRES_DB=advanced_hello_world
-export POSTGRES_USER=advanced_hello_world
-export POSTGRES_PASSWORD=local-development-password
-export DJANGO_SECRET_KEY=local-development-only-key
-export DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
-export CORS_ALLOWED_ORIGINS=http://localhost:5173
+cp .env.example .env
 ```
+
+Edit `.env` so its database role and password match PostgreSQL. Development
+commands launched through `manage.py` load this file automatically. Variables
+already exported by the shell take precedence over values in `.env`.
 
 Run migrations and start Django:
 
@@ -78,8 +75,8 @@ docker run --name advanced-hello-world-db \
   -d postgres:17.5-alpine
 ```
 
-Use the native environment and Django commands above. Stop and restart the
-database with:
+Set the password in `.env` to the same value used by the container, then use the
+native Django commands above. Stop and restart the database with:
 
 ```bash
 docker stop advanced-hello-world-db
