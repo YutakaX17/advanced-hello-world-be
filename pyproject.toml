@@ -1,0 +1,42 @@
+[build-system]
+requires = ["hatchling>=1.27"]
+build-backend = "hatchling.build"
+
+[project]
+name = "advanced-hello-world-be"
+version = "0.1.0"
+description = "Django assembler for Advanced Hello World"
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+dependencies = [
+  "Django>=5.2,<5.3",
+  "django-cors-headers>=4.7,<4.8",
+  "djangorestframework>=3.16,<3.17",
+  "gunicorn>=23,<24",
+  "psycopg[binary]>=3.2,<3.3",
+]
+
+[project.optional-dependencies]
+dev = [
+  "mypy>=1.16",
+  "pytest>=8.4",
+  "pytest-django>=4.11",
+  "ruff>=0.12",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/advanced_hello_world"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "advanced_hello_world.settings.test"
+pythonpath = ["src"]
+addopts = "--strict-markers"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "DJ"]
+
