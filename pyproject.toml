@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "advanced-hello-world-be"
-version = "0.1.0"
+version = "0.2.0"
 description = "Django assembler for Advanced Hello World"
 readme = "README.md"
 requires-python = ">=3.12"
