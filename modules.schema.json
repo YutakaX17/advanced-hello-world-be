@@ -1,0 +1,65 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/YutakaX17/advanced-hello-world-be/modules.schema.json",
+  "title": "Backend assembly manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "core", "modules"],
+  "properties": {
+    "$schema": {
+      "type": "string"
+    },
+    "schemaVersion": {
+      "const": 1
+    },
+    "core": {
+      "$ref": "#/$defs/module"
+    },
+    "modules": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/module"
+      }
+    }
+  },
+  "$defs": {
+    "module": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "package",
+        "version",
+        "djangoApp",
+        "urls",
+        "urlPrefix"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "package": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$"
+        },
+        "version": {
+          "type": "string",
+          "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$"
+        },
+        "djangoApp": {
+          "type": "string",
+          "pattern": "^[A-Za-z_][A-Za-z0-9_.]*$"
+        },
+        "urls": {
+          "type": "string",
+          "pattern": "^[A-Za-z_][A-Za-z0-9_.]*$"
+        },
+        "urlPrefix": {
+          "type": "string",
+          "pattern": "^[^/].*/$"
+        }
+      }
+    }
+  }
+}
