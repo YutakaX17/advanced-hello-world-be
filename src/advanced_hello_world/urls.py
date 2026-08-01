@@ -1,3 +1,7 @@
 from django.urls import include, path
 
-urlpatterns = [path("api/", include("advanced_hello_world_core.urls"))]
+from advanced_hello_world.settings.base import MODULE_MANIFEST
+
+urlpatterns = [
+    path(selection.url_prefix, include(selection.urls)) for selection in MODULE_MANIFEST.selections
+]

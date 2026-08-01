@@ -9,7 +9,7 @@ def test_repository_manifest_is_valid() -> None:
     manifest = load_manifest(__import__("pathlib").Path("modules.json"))
 
     assert manifest.core.id == "platform-core"
-    assert manifest.modules == ()
+    assert [module.id for module in manifest.modules] == ["messages"]
 
 
 def test_duplicate_module_ids_are_rejected(tmp_path) -> None:

@@ -1,4 +1,5 @@
 import argparse
+import importlib
 import json
 import re
 from dataclasses import dataclass
@@ -12,7 +13,18 @@ _MODULE_ID = re.compile(r"^[a-z][a-z0-9-]*$")
 _PACKAGE = re.compile(r"^[a-z][a-z0-9-]*$")
 _VERSION = re.compile(r"^[0-9]+\.[0-9]+\.[0-9]+$")
 _IMPORT_PATH = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z_][A-Za-z0-9_]*)*$")
-_FIELDS = {"id", "package", "version", "djangoApp", "urls", "urlPrefix"}
+_REPOSITORY = re.compile(r"^https://github\.com/[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+\.git$")
+_REF = re.compile(r"^[0-9a-f]{40}$")
+_FIELDS = {
+    "id",
+    "package",
+    "version",
+    "repository",
+    "ref",
+    "djangoApp",
+    "urls",
+    "urlPrefix",
+}
 
 
 @dataclass(frozen=True, slots=True)
@@ -20,6 +32,8 @@ class ModuleSelection:
     id: str
     package: str
     version: str
+    repository: str
+    ref: str
     django_app: str
     urls: str
     url_prefix: str
@@ -44,6 +58,10 @@ def _selection(raw: Any, location: str) -> ModuleSelection:
         raise ValueError(f"{location}.package is invalid")
     if not _VERSION.fullmatch(raw["version"]):
         raise ValueError(f"{location}.version must be an exact semantic version")
+    if not _REPOSITORY.fullmatch(raw["repository"]):
+        raise ValueError(f"{location}.repository must be an HTTPS GitHub Git URL")
+    if not _REF.fullmatch(raw["ref"]):
+        raise ValueError(f"{location}.ref must be a full commit SHA")
     if not _IMPORT_PATH.fullmatch(raw["djangoApp"]):
         raise ValueError(f"{location}.djangoApp is invalid")
     if not _IMPORT_PATH.fullmatch(raw["urls"]):
@@ -54,6 +72,8 @@ def _selection(raw: Any, location: str) -> ModuleSelection:
         id=raw["id"],
         package=raw["package"],
         version=raw["version"],
+        repository=raw["repository"],
+        ref=raw["ref"],
         django_app=raw["djangoApp"],
         urls=raw["urls"],
         url_prefix=raw["urlPrefix"],
@@ -94,6 +114,22 @@ def load_manifest(path: Path, *, verify_installed: bool = False) -> AssemblyMani
                 raise ValueError(
                     f"{selection.package} {installed} does not match {selection.version}"
                 )
+        for selection in manifest.modules:
+            descriptor = importlib.import_module(f"{selection.django_app}.module").MODULE
+            expected = (
+                selection.id,
+                selection.django_app,
+                selection.urls,
+                selection.url_prefix,
+            )
+            actual = (
+                descriptor.id,
+                descriptor.django_app,
+                descriptor.urls,
+                descriptor.url_prefix,
+            )
+            if actual != expected:
+                raise ValueError(f"{selection.package} metadata does not match modules.json")
     return manifest
 
 
