@@ -1,0 +1,13 @@
+{
+  "$schema": "./modules.schema.json",
+  "schemaVersion": 1,
+  "core": {
+    "id": "platform-core",
+    "package": "advanced-hello-world-be-core",
+    "version": "0.1.0",
+    "djangoApp": "advanced_hello_world_core",
+    "urls": "advanced_hello_world_core.urls",
+    "urlPrefix": "api/"
+  },
+  "modules": []
+}

@@ -6,6 +6,11 @@ migration commands, and the production container. Models and API behavior come
 from the separately versioned
 [backend core](https://github.com/YutakaX17/advanced-hello-world-be-core).
 
+`modules.json` is the authoritative, schema-validated record of packages
+selected by this assembler. Package installation and generated registration are
+introduced in the modular assembly milestone; the current manifest records the
+existing released core without changing runtime behavior.
+
 ## Requirements
 
 - Git
